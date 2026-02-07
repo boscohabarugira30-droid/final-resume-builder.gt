@@ -35,8 +35,11 @@ export default function BoscoApp() {
 
   const colors = ["#0a1e3c", "#1e40af", "#065f46", "#991b1b", "#6b21a8", "#111827", "#f97316"];
 
-  const scrollTo = (ref: React.RefObject<HTMLDivElement>) => {
-    ref.current?.scrollIntoView({ behavior: "smooth" });
+  // FIXED: Adjusted function signature to match React Ref standards
+  const scrollTo = (ref: React.RefObject<HTMLDivElement | null>) => {
+    if (ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const fullText = "This resume builder gets you hired!";
