@@ -36,7 +36,7 @@ export default function BoscoApp() {
   const colors = ["#0a1e3c", "#1e40af", "#065f46", "#991b1b", "#6b21a8", "#111827", "#f97316"];
 
   const scrollTo = (ref: React.RefObject<HTMLDivElement | null>) => {
-    if (ref.current) {
+    if (ref && ref.current) {
       ref.current.scrollIntoView({ behavior: "smooth" });
     }
   };
@@ -294,9 +294,9 @@ export default function BoscoApp() {
           <button onClick={() => window.print()} className="hidden md:flex bg-black text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase items-center gap-2"><Printer size={14}/> Download</button>
         </div>
 
-        {/* FIXED: Added 'print-fix' class and adjusted CSS */}
-        <div className="w-full flex justify-center origin-top scale-[0.35] sm:scale-[0.55] md:scale-[0.75] lg:scale-100 mb-[-500px] md:mb-0 print:m-0 print:p-0 print:scale-100">
-          <div id="resume-document" className={`w-[210mm] min-h-[297mm] bg-white shadow-2xl flex flex-col print-bg overflow-hidden print:shadow-none print:w-full print:h-full`}>
+        {/* MOBILE VIEW FIX: Using flex-col and wider scaling for a better mobile look */}
+        <div className="w-full flex justify-center origin-top scale-[0.45] sm:scale-[0.55] md:scale-[0.75] lg:scale-100 mb-[-450px] md:mb-0 print:scale-100 print:m-0">
+          <div id="resume-document" className={`w-[210mm] min-h-[297mm] bg-white shadow-2xl flex flex-col print-bg overflow-hidden print:w-[210mm] print:h-[297mm] print:shadow-none`}>
               {template === 'corporate' || template === 'grid' ? (
                 <div className="p-16 space-y-8 flex-1">
                    <div className="text-center space-y-4 border-b pb-8">
@@ -346,21 +346,19 @@ export default function BoscoApp() {
           @media print {
             .no-print { display: none !important; }
             body { background: white !important; margin: 0 !important; padding: 0 !important; }
-            html, body { height: 100%; overflow: visible; }
-            /* This forces the container to be full size during print */
+            html, body { width: 210mm; height: 297mm; overflow: hidden !important; }
             div.origin-top { 
-              transform: scale(1) !important; 
+              transform: none !important; 
               margin: 0 !important; 
-              padding: 0 !important; 
-              position: static !important;
+              padding: 0 !important;
+              display: block !important;
             }
             #resume-document { 
               box-shadow: none !important; 
               width: 210mm !important; 
               height: 297mm !important; 
               margin: 0 !important;
-              padding: 0 !important;
-              page-break-after: always;
+              page-break-after: avoid;
             }
             .print-bg { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
           }
