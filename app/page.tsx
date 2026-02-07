@@ -242,7 +242,6 @@ export default function BoscoApp() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-slate-100 overflow-hidden font-sans">
-      {/* Mobile Header for Editor */}
       <div className="lg:hidden bg-white p-4 border-b flex justify-between items-center z-30 no-print">
         <button onClick={() => setView("landing")} className="text-slate-400"><ArrowLeft size={20}/></button>
         <h2 className="font-black uppercase tracking-tighter text-blue-600">CV Editor</h2>
@@ -281,7 +280,6 @@ export default function BoscoApp() {
             <textarea placeholder="Experience" className="w-full p-3 bg-slate-50 rounded-xl border border-slate-300 text-xs h-32" value={data.experience} onChange={e => update("experience", e.target.value)} />
             <input placeholder="Skills" className="w-full p-3 bg-slate-50 rounded-xl border border-slate-300 text-xs" value={data.skills} onChange={e => update("skills", e.target.value)} />
           </div>
-          {/* MOBILE PREVIEW/DOWNLOAD BUTTON */}
           <button onClick={() => {setIsSidebarOpen(false); setTimeout(() => window.print(), 300);}} className="lg:hidden bg-blue-600 text-white w-full py-4 rounded-xl font-black uppercase flex items-center justify-center gap-3">
             <Printer size={18}/> Download PDF
           </button>
@@ -296,9 +294,9 @@ export default function BoscoApp() {
           <button onClick={() => window.print()} className="hidden md:flex bg-black text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase items-center gap-2"><Printer size={14}/> Download</button>
         </div>
 
-        {/* Scaled Preview for Mobile Viewport */}
-        <div className="w-full flex justify-center origin-top scale-[0.35] sm:scale-[0.55] md:scale-[0.75] lg:scale-100 mb-[-500px] md:mb-0">
-          <div id="resume-document" className={`w-[210mm] min-h-[297mm] bg-white shadow-2xl flex flex-col print-bg overflow-hidden`}>
+        {/* FIXED: Added 'print-fix' class and adjusted CSS */}
+        <div className="w-full flex justify-center origin-top scale-[0.35] sm:scale-[0.55] md:scale-[0.75] lg:scale-100 mb-[-500px] md:mb-0 print:m-0 print:p-0 print:scale-100">
+          <div id="resume-document" className={`w-[210mm] min-h-[297mm] bg-white shadow-2xl flex flex-col print-bg overflow-hidden print:shadow-none print:w-full print:h-full`}>
               {template === 'corporate' || template === 'grid' ? (
                 <div className="p-16 space-y-8 flex-1">
                    <div className="text-center space-y-4 border-b pb-8">
@@ -347,16 +345,22 @@ export default function BoscoApp() {
         <style jsx global>{`
           @media print {
             .no-print { display: none !important; }
-            body { background: white !important; margin: 0; padding: 0; }
+            body { background: white !important; margin: 0 !important; padding: 0 !important; }
+            html, body { height: 100%; overflow: visible; }
+            /* This forces the container to be full size during print */
+            div.origin-top { 
+              transform: scale(1) !important; 
+              margin: 0 !important; 
+              padding: 0 !important; 
+              position: static !important;
+            }
             #resume-document { 
               box-shadow: none !important; 
-              margin: 0 !important; 
               width: 210mm !important; 
               height: 297mm !important; 
-              transform: scale(1) !important;
-              position: absolute;
-              top: 0;
-              left: 0;
+              margin: 0 !important;
+              padding: 0 !important;
+              page-break-after: always;
             }
             .print-bg { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
           }
